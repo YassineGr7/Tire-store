@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TireController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WarehouseController;
@@ -84,7 +85,14 @@ Route::middleware("auth")->group(function () {
   Route::resource('customers', ContactController::class)
     ->names('contacts')
     ->except(['create', 'show', 'edit']);
-});
+
+  // Settings Routes
+  Route::get("/settings", [SettingController::class, "index"])->name('settings');
+  Route::post("/settings/profile", [SettingController::class, "updateProfile"])->name("settings.profile");
+  Route::post("/settings/company", [SettingController::class, "updateCompany"])->name("settings.company");
+  Route::post("/settings/preferences", [SettingController::class, "updatePreferences"])->name("settings.preferences");
+
+ });
 
 
 
