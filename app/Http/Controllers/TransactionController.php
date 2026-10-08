@@ -23,7 +23,8 @@ class TransactionController extends Controller
    */
   public function index(Request $request)
   {
-    $query = Transaction::with(['contact', 'user', 'details.tire.brand'])
+    $query = Transaction::with('contact:id,name')
+      ->withSum('details as grand_total', 'total_price')
       ->latest("transaction_date");
 
     // ----- filters-------

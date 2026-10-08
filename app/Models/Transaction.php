@@ -48,7 +48,9 @@ class Transaction extends Model
   protected function grandTotal(): Attribute
   {
     return Attribute::make(
-      get: fn () => $this->details->sum(fn ($detail) => $detail->total_price)
+      get: fn ($value) => array_key_exists('grand_total', $this->attributes)
+        ? (float) ($value ?? 0)
+        : $this->details->sum(fn ($detail) => $detail->total_price)
     );
   }
 

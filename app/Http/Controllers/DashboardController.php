@@ -80,12 +80,12 @@ class DashboardController extends Controller
                 ->where('transactions.type', 'sale')
                 ->where('transactions.status', 'completed')
                 ->selectRaw("
-                    tires.id, 
+                    tires.id,
                     SUM(transaction_details.quantity) as total_quantity,
                     CONCAT(
-                        COALESCE(brands.name, ''), ' ', 
-                        tires.width, '/', tires.aspect_ratio, ' ', 
-                        tires.construction, tires.diameter, ' ', 
+                        COALESCE(brands.name, ''), ' ',
+                        tires.width, '/', tires.aspect_ratio, ' ',
+                        tires.construction, tires.diameter, ' ',
                         tires.load_index, tires.speed_index
                     ) as name
                 ")
@@ -117,7 +117,9 @@ class DashboardController extends Controller
         // 5. Flux des 5 dernières ventes (En temps réel / non-caché)
         $recentSales = Transaction::where("type", "sale")
             ->where("status", "completed")
-            ->with(["contact:id,name", "details:id,transaction_id,quantity,total_price"])
+            ->with("contact:id,name")
+            ->withSum("details as total_price", "total_price")
+            ->withSum("details as total_items", "quantity")
             ->latest("transaction_date")
             ->take(5)
             ->get(['id', 'invoice_number', 'contact_id', 'transaction_date'])
@@ -125,8 +127,8 @@ class DashboardController extends Controller
                 "id"             => $t->id,
                 "invoice_number" => $t->invoice_number,
                 "client_name"    => $t->contact->name ?? "Client inconnu",
-                "total_price"    => (float) $t->details->sum("total_price"),
-                "total_items"    => (int) $t->details->sum("quantity"),
+                "total_price"    => (float) $t->total_price,
+                "total_items"    => (int) $t->total_items,
                 "date"           => $t->transaction_date ? $t->transaction_date->format("d/m/Y H:i") : "",
             ]);
 

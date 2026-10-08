@@ -19,7 +19,7 @@ export default function Login({ status, error }) {
     <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50">
       <Head title="Connexion" />
 
-      {/* Left Column: Branding & Illustration */}
+      {/* Left Column */}
       <div className="hidden lg:flex flex-col justify-between bg-slate-900 p-12 text-white relative overflow-hidden">
         <div className="flex items-center gap-3 z-10">
           <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center font-bold text-white text-xl">
@@ -41,11 +41,10 @@ export default function Login({ status, error }) {
           © {new Date().getFullYear()} TireStore. Tous droits réservés.
         </div>
 
-        {/* Decorative background glow */}
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* Right Column: Compact Form */}
+      {/* Right Column */}
       <div className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm space-y-6">
           <div className="text-center lg:text-left">
@@ -59,13 +58,15 @@ export default function Login({ status, error }) {
             </div>
           )}
 
-          {error && (
-            <div className="text-xs font-medium text-red-700 bg-red-50 p-3 rounded-xl border border-red-200">
-              {error}
+          {/* Top Global Error Banner */}
+          {(error || errors.email || errors.password) && (
+            <div className="flex items-center gap-2 text-xs font-medium text-red-700 bg-red-50 p-3 rounded-xl border border-red-200">
+              <IconAlertCircle size={16} className="shrink-0" />
+              <span>{error || errors.email || errors.password}</span>
             </div>
           )}
 
-          {/* Google Button */}
+          {/* Google Login */}
           <a
             href="/auth/google"
             className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-xl py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition shadow-xs"
@@ -95,10 +96,17 @@ export default function Login({ status, error }) {
                   type="email"
                   value={data.email}
                   onChange={(e) => setData('email', e.target.value)}
-                  className="w-full pl-9 pr-3 py-2  bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className={`w-full pl-9 pr-3 py-2 bg-white border rounded-xl focus:ring-2 focus:outline-none ${
+                    errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'
+                  }`}
                   placeholder="nom@exemple.com"
                 />
               </div>
+              {errors.email && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <IconAlertCircle size={13} /> {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
@@ -109,10 +117,17 @@ export default function Login({ status, error }) {
                   type="password"
                   value={data.password}
                   onChange={(e) => setData('password', e.target.value)}
-                  className="w-full pl-9 pr-3 py-2  bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className={`w-full pl-9 pr-3 py-2 bg-white border rounded-xl focus:ring-2 focus:outline-none ${
+                    errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'
+                  }`}
                   placeholder="••••••••"
                 />
               </div>
+              {errors.password && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <IconAlertCircle size={13} /> {errors.password}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-xs">

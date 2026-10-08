@@ -11,7 +11,9 @@ class WarehouseController extends Controller
 {
   public function index()
   {
-    $warehouses = Warehouse::with('tires')->latest()->get();
+    $warehouses = Warehouse::withSum('tires as current_stock', 'warehouse_tire.quantity')
+      ->latest()
+      ->get();
 
     return Inertia::render("Warehouses/Index", [
       "warehouses" => $warehouses

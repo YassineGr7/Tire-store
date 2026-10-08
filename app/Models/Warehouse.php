@@ -22,8 +22,12 @@ class Warehouse extends Model
   /**
    * Calcule le stock total du dépôt (somme des quantités dans le pivot)
    */
-  public function getCurrentStockAttribute(): int
+  public function getCurrentStockAttribute($value = null): int
   {
+    if (array_key_exists('current_stock', $this->attributes)) {
+      return (int) ($value ?? 0);
+    }
+
     return $this->tires->sum('pivot.quantity');
   }
 }

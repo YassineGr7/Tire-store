@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password ;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
 class SettingController extends Controller
@@ -31,7 +31,7 @@ class SettingController extends Controller
 
     /**
      * Update user profile and password
-    */
+     */
     public function updateProfile(Request $request)
     {
         $user = $request->user();
@@ -58,13 +58,12 @@ class SettingController extends Controller
 
         $user->save();
 
-        return back()->with("success", "Profil mis à jour avec succès.");
-
+        return back()->with('success', 'Votre mot de passe et votre profil ont été mis à jour avec succès.');
     }
 
     /**
      * Update company details for PDF Invoices.
-    */
+     */
     public function updateCompany(Request $request)
     {
         $validated = $request->validate([
@@ -84,7 +83,7 @@ class SettingController extends Controller
 
     /**
      * Update Stock rules & preferences.
-    */
+     */
     public function updatePreferences(Request $request)
     {
         $validated = $request->validate([
