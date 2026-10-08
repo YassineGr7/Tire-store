@@ -180,13 +180,18 @@ export default function Settings({ company, preferences }) {
                                         <input
                                             type="email"
                                             value={profileForm.data.email}
+                                            disabled={Boolean(user?.google_id)} // Disable email editing if managed by Google
                                             onChange={(e) =>
                                                 profileForm.setData(
                                                     "email",
                                                     e.target.value,
                                                 )
                                             }
-                                            className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                            className={`w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none ${
+                                                user?.google_id
+                                                    ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                                                    : ""
+                                            }`}
                                         />
                                         {profileForm.errors.email && (
                                             <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
@@ -202,93 +207,121 @@ export default function Settings({ company, preferences }) {
                                         size={18}
                                         className="text-emerald-600"
                                     />
-                                    Modifier le mot de passe
+                                    Sécurité du Compte
                                 </h2>
 
-                                <div className="space-y-3">
-                                    <div>
-                                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                                            Mot de passe actuel
-                                        </label>
-                                        <input
-                                            type="password"
-                                            value={
-                                                profileForm.data
-                                                    .current_password
-                                            }
-                                            onChange={(e) =>
-                                                profileForm.setData(
-                                                    "current_password",
-                                                    e.target.value,
-                                                )
-                                            }
-                                            className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                {/* CONDITION: If Google OAuth User, show Info Box instead of Password fields */}
+                                {user?.google_id ? (
+                                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs flex items-start gap-3">
+                                        <IconShieldCheck
+                                            size={22}
+                                            className="text-emerald-600 shrink-0 mt-0.5"
                                         />
-                                        {profileForm.errors
-                                            .current_password && (
-                                            <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
-                                                <IconAlertCircle size={13} />{" "}
-                                                {
-                                                    profileForm.errors
-                                                        .current_password
-                                                }
+                                        <div className="space-y-1">
+                                            <p className="font-bold text-slate-800">
+                                                Compte sécurisé avec Google
                                             </p>
-                                        )}
+                                            <p className="text-slate-500 text-[11px]">
+                                                Vous vous connectez à TireStore
+                                                via votre compte Google (
+                                                <span className="font-medium text-slate-700">
+                                                    {user?.email}
+                                                </span>
+                                                ). Vous n'avez pas de mot de
+                                                passe local à gérer.
+                                            </p>
+                                        </div>
                                     </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ) : (
+                                    /* Standard Password Form for Email/Password Users */
+                                    <div className="space-y-3">
                                         <div>
                                             <label className="block text-xs font-medium text-gray-700 mb-1">
-                                                Nouveau mot de passe
+                                                Mot de passe actuel
                                             </label>
                                             <input
                                                 type="password"
                                                 value={
                                                     profileForm.data
-                                                        .new_password
+                                                        .current_password
                                                 }
                                                 onChange={(e) =>
                                                     profileForm.setData(
-                                                        "new_password",
+                                                        "current_password",
                                                         e.target.value,
                                                     )
                                                 }
                                                 className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                                             />
                                             {profileForm.errors
-                                                .new_password && (
+                                                .current_password && (
                                                 <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
                                                     <IconAlertCircle
                                                         size={13}
                                                     />{" "}
                                                     {
                                                         profileForm.errors
-                                                            .new_password
+                                                            .current_password
                                                     }
                                                 </p>
                                             )}
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-700 mb-1">
-                                                Confirmer le mot de passe
-                                            </label>
-                                            <input
-                                                type="password"
-                                                value={
-                                                    profileForm.data
-                                                        .new_password_confirmation
-                                                }
-                                                onChange={(e) =>
-                                                    profileForm.setData(
-                                                        "new_password_confirmation",
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                                            />
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                    Nouveau mot de passe
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    value={
+                                                        profileForm.data
+                                                            .new_password
+                                                    }
+                                                    onChange={(e) =>
+                                                        profileForm.setData(
+                                                            "new_password",
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                                />
+                                                {profileForm.errors
+                                                    .new_password && (
+                                                    <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                                                        <IconAlertCircle
+                                                            size={13}
+                                                        />{" "}
+                                                        {
+                                                            profileForm.errors
+                                                                .new_password
+                                                        }
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                                    Confirmer le mot de passe
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    value={
+                                                        profileForm.data
+                                                            .new_password_confirmation
+                                                    }
+                                                    onChange={(e) =>
+                                                        profileForm.setData(
+                                                            "new_password_confirmation",
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
 
                                 <div className="pt-3 flex justify-end">
                                     <button
