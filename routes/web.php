@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -30,6 +31,16 @@ Route::middleware("guest")->group(function () {
   Route::get('/login', [LoginController::class, 'create'])->name('login');
   Route::post('/login', [LoginController::class, 'store']);
 
+  // Password reset routes
+  Route::get("/forgot-password", [ForgotPasswordController::class, 'showEmailForm'])->name("password.request");
+  Route::post("/forgot-password", [ForgotPasswordController::class, 'sendOtp'])->name("password.email");
+
+  Route::get("/verify-otp", [ForgotPasswordController::class, "showVerifyForm"])->name("password.verify");
+  Route::post("/verify-otp", [ForgotPasswordController::class, "verifyOtp"])->name("password.otp.submit");
+  
+  Route::get("/reset-password", [ForgotPasswordController::class, "showResetForm"])->name("password.reset");
+  Route::post("/reset-password", [ForgotPasswordController::class, "updatePassword"])->name("password.update");
+  
   // Authentification Google OAuth
   Route::get("/auth/google", [GoogleController::class, 'redirectToGoogle'])->name("auth.google");
   Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);

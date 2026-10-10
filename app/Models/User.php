@@ -23,6 +23,8 @@ class User extends Authenticatable
     'password',
     'google_id',
     'avatar',
+    'otp_code',
+    'otp_expires_at',
   ];
   /**
    * Get the attributes that should be cast.
